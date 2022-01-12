@@ -1,0 +1,84 @@
+plugins {
+    id 'com.android.application'
+}
+
+
+def ABI_ARM64_V8a = "arm64-v8a"
+def ABI_ARMEABI_V7a = "armeabi-v7a"
+
+def ABIS = [ABI_ARM64_V8a, ABI_ARMEABI_V7a]
+android {
+    compileSdkVersion 30
+    buildToolsVersion '30.0.2'
+
+    defaultConfig {
+        applicationId "com.mik.ratelmodule"
+        minSdkVersion 28
+        targetSdkVersion 30
+        versionCode 1
+        versionName "1.0"
+
+
+        ndk {
+            abiFilters 'arm64-v8a'
+        }
+        externalNativeBuild {
+            cmake {
+//                cppFlags "-frtti -fexceptions"
+                cppFlags "-frtti -fexceptions -std=c++11"
+                arguments "-DLIB_NAME=ratelnative"
+            }
+        }
+
+//        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+//        externalNativeBuild {
+//            cmake {
+//                // 请注意，目前不支持64位 'x86', 'x86_64', 'arm64-v8a'
+//                // 受限于sandhook，现在我们也不支持x86了
+//                abiFilters  ABI_ARMEABI_V7a
+//                // c++代码阅读，默认使用的64位。如果想要查看32位代码，那么可以暂时关闭64位
+//                //abiFilters "armeabi-v7a"
+//                arguments "-DLIB_NAME=ratelnative"
+//
+//            }
+//        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    sourceSets {
+        main {
+            jniLibs.srcDirs = ['libs']
+        }
+    }
+
+    externalNativeBuild {
+        cmake {
+            path 'src/main/cpp/CMakeLists.txt'
+//            version "3.6.4111459"
+        }
+    }
+
+
+}
+
+dependencies {
+
+    implementation 'androidx.appcompat:appcompat:1.1.0'
+    implementation 'com.google.android.material:material:1.1.0'
+    implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
+    testImplementation 'junit:junit:4.+'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.1'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+    implementation "com.android.support:support-annotations:28.0.0"
+}
+
